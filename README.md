@@ -10,6 +10,7 @@ Aquino, Micaleigh Gwyett
 - Wrote the README documentation
 - Implemented the login functionality
 
+ <br/>
 
 King, Melanie
 - Developed the main program flow, classes, variables, and resource handling
