@@ -8,10 +8,8 @@ Aquino, Micaleigh Gwyett
 - Implemented PhilHealth and Pag-IBIG contribution calculations
 - Conducted testing
 - Wrote the README documentation
-
-Dioso, Mary Joyce
 - Implemented the login functionality
-- Performed testing
+
 
 King, Melanie
 - Developed the main program flow, classes, variables, and resource handling
@@ -19,6 +17,7 @@ King, Melanie
 - Developed SSS contribution and tax computation
 - Conducted testing
 - Contributed to README documentation
+- Performed testing
 
 
  <br/>
