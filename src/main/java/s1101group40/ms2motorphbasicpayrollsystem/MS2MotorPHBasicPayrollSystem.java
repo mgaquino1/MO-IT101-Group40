@@ -168,7 +168,6 @@ public class MS2MotorPHBasicPayrollSystem {
                 System.out.print("Enter employee #: ");
                 processEmployeePayroll(sc.nextLine());
             } else if (opt.equals("2")) {
-                // Sorted automatically because employeeData is a TreeMap
                 employeeData.keySet().forEach(MS2MotorPHBasicPayrollSystem::processEmployeePayroll);
             } else if (opt.equals("3")) break;
             else System.out.println("Invalid option.");
