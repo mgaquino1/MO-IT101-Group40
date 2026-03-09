@@ -40,10 +40,10 @@ This project uses CSV files as data sources and demonstrates robust handling of 
 - Process payroll for:
   - **One employee** – enter employee number to compute salary.
   - **All employees** – compute payroll for the entire company.
-- Automatic calculation of deductions:
+- Automatic calculation of monhtly gross salary deductions (deducted only on the second cutoff):
   - SSS contribution based on a provided SSS table.
   - PhilHealth (3% of monthly gross, capped at PHP 1,800, shared equally by employer and employee).
-  - Pag-IBIG contribution based on monthly gross (deducted only for the second cutoff).
+  - Pag-IBIG contribution based on monthly gross.
   - Withholding tax based on the total taxable income.
 - Supports bi-monthly cutoff payroll (1st cutoff: 1–15, 2nd cutoff: 16–end of month).
 
