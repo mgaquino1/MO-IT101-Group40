@@ -69,7 +69,6 @@ The system relies on three CSV files located in `src/main/resources`:
 3. **SSS Contribution Table** – `Computation_SSSContributionN.csv`  
    Contains ranges of monthly gross salaries and corresponding SSS contributions.
 
-**Note:** The CSV parser handles quoted fields and commas correctly.
 
 ---
 
