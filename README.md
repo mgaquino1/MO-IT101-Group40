@@ -4,11 +4,11 @@
 **Team Details: Group 40**
 
 Aquino, Micaleigh Gwyett
+- Implemented the login functionality
 - Designed menu structures and output formatting
 - Implemented PhilHealth and Pag-IBIG contribution computation
 - Conducted testing
 - Wrote the README documentation
-- Implemented the login functionality
 
  <br/>
 
