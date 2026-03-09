@@ -18,7 +18,6 @@ King, Melanie
 - Developed SSS contribution and tax computation
 - Conducted testing
 - Contributed to README documentation
-- Performed testing
 
 
  <br/>
