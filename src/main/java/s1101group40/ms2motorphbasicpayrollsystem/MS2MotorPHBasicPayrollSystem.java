@@ -71,6 +71,8 @@ public class MS2MotorPHBasicPayrollSystem {
                 String[] fields = parseCSVLine(line);
                 String empNum = fields[0];
                 employeeData.put(empNum, fields);
+
+                // fields[18] corresponds to the Hourly Rate column in the CSV
                 employeeHourlyRate.put(empNum, Double.parseDouble(fields[18].replace(",", "")));
             }
         } catch (Exception e) {
@@ -98,19 +100,12 @@ public class MS2MotorPHBasicPayrollSystem {
     }
 
     static String[] parseCSVLine(String line) {
-        List<String> tokens = new ArrayList<>();
-        boolean inQuotes = false;
-        StringBuilder sb = new StringBuilder();
-        for (char c : line.toCharArray()) {
-            if (c == '"') inQuotes = !inQuotes;
-            else if (c == ',' && !inQuotes) {
-                tokens.add(sb.toString());
-                sb = new StringBuilder();
-            } else sb.append(c);
-        }
-        tokens.add(sb.toString());
-        return tokens.toArray(new String[0]);
-    }
+            String[] tokens = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+            for (int i = 0; i < tokens.length; i++) {
+                tokens[i] = tokens[i].replace("\"", "").trim();
+            }
+            return tokens;
+     }
 
     static double getSSSContribution(double monthlyGross) {
         for (double[] r : sssTable) {
@@ -208,6 +203,7 @@ public class MS2MotorPHBasicPayrollSystem {
             System.out.println("Employee not found.");
             return;
         }
+
         String[] emp = employeeData.get(empNum);
         double hourlyRate = employeeHourlyRate.get(empNum);
 
@@ -220,14 +216,29 @@ public class MS2MotorPHBasicPayrollSystem {
             String cutoff = date.getDayOfMonth() <= 15
                     ? date.getMonthValue() + "/1-" + date.getMonthValue() + "/15"
                     : date.getMonthValue() + "/16-" + date.getMonthValue() + "/" + date.lengthOfMonth();
+
             LocalTime in = parseTime(rec[1]);
             LocalTime out = parseTime(rec[2]);
-            if (in.isBefore(LocalTime.of(8, 0))) in = LocalTime.of(8, 0);
+
+            LocalTime standardIn = LocalTime.of(8, 0);
+            LocalTime graceIn = LocalTime.of(8, 10);
+
+            if (in.isBefore(graceIn)) {
+                in = standardIn;
+            }
+
             if (out.isAfter(LocalTime.of(17, 0))) out = LocalTime.of(17, 0);
+
             double hours = Duration.between(in, out).toMinutes() / 60.0;
+            if (hours >= 8.0) {
+                hours = Math.max(0, hours - 1.0);
+            }
             cutoffHours.put(cutoff, cutoffHours.getOrDefault(cutoff, 0.0) + hours);
         }
+        printPayrollReport(empNum, emp, cutoffHours, hourlyRate);
+    }
 
+    static void printPayrollReport(String empNum, String[] emp, Map<String, Double> cutoffHours, double hourlyRate) {
         System.out.println("\nEmployee #: " + empNum);
         System.out.println("Employee Name: " + emp[2] + " " + emp[1]);
         System.out.println("Birthday: " + emp[3]);
