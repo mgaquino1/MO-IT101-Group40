@@ -19,8 +19,12 @@ King, Melanie
 - Conducted testing
 - Contributed to README documentation
 
-
  <br/>
+------
+
+QA Test Case Document:
+https://docs.google.com/spreadsheets/d/1Fc5Sru44sCD1wQs6CBYQDT-5dxoOtTvzm8zwqgOLU8M/edit?usp=sharing
+
 ---------------
 
 
