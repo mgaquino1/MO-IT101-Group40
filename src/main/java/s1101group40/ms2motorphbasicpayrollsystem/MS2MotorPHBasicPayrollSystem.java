@@ -46,6 +46,9 @@ public class MS2MotorPHBasicPayrollSystem {
             while (file.hasNextLine()) {
                 String line = file.nextLine();
                 String[] parts = line.split(",");
+                // parts[0] = lower salary column in the CSV
+                // parts[1] = upper salary column in the CSV
+                // parts[2] = SSS contribution amount column in the CSV
                 double lower = parseCSVNumber(parts[0]);
                 double upper = parseCSVNumber(parts[1]);
                 double contribution = parseCSVNumber(parts[2]);
@@ -69,10 +72,11 @@ public class MS2MotorPHBasicPayrollSystem {
             while (file.hasNextLine()) {
                 String line = file.nextLine();
                 String[] fields = parseCSVLine(line);
+                // fields[0] = Employee Number column in the CSV
                 String empNum = fields[0];
                 employeeData.put(empNum, fields);
 
-                // fields[18] corresponds to the Hourly Rate column in the CSV
+                // fields[18] = Hourly Rate column in the CSV
                 employeeHourlyRate.put(empNum, Double.parseDouble(fields[18].replace(",", "")));
             }
         } catch (Exception e) {
@@ -89,7 +93,11 @@ public class MS2MotorPHBasicPayrollSystem {
                 String line = file.nextLine();
                 String[] fields = parseCSVLine(line);
                 attendanceData
+                        // fields[0] = Employee Number column in the CSV
                         .computeIfAbsent(fields[0], k -> new ArrayList<>())
+                        // fields[3] = Date column in the CSV
+                        // fields[4] = Time In column in the CSV
+                        // fields[5] = Time Out column in the CSV
                         .add(new String[]{fields[3], fields[4], fields[5]});
             }
         } catch (Exception e) {
@@ -109,6 +117,7 @@ public class MS2MotorPHBasicPayrollSystem {
 
     static double getSSSContribution(double monthlyGross) {
         for (double[] r : sssTable) {
+            // r[0] = lower, r[1] = upper, r[2] = contribution
             if (monthlyGross >= r[0] && monthlyGross <= r[1])
                 return r[2];
         }
@@ -192,6 +201,9 @@ public class MS2MotorPHBasicPayrollSystem {
             System.out.println("Employee not found.");
             return;
         }
+        // emp[1] = Last Name column in the CSV
+        // emp[2] = First Name column in the CSV
+        // emp[3] = Birthday column in the CSV
         String[] emp = employeeData.get(empNum);
         System.out.println("\nEmployee #: " + empNum);
         System.out.println("Name: " + emp[2] + " " + emp[1]);
@@ -212,16 +224,20 @@ public class MS2MotorPHBasicPayrollSystem {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
         for (String[] rec : records) {
+            // rec[0] = Date column from attendance CSV
             LocalDate date = LocalDate.parse(rec[0], df);
             String cutoff = date.getDayOfMonth() <= 15
+                    // Determines payroll cutoff period: 1–15 or 16–end of month
                     ? date.getMonthValue() + "/1-" + date.getMonthValue() + "/15"
                     : date.getMonthValue() + "/16-" + date.getMonthValue() + "/" + date.lengthOfMonth();
 
-            LocalTime in = parseTime(rec[1]);
+            // rec[1] = Time In column from attendance CSV
+            // rec[2] = Time Out column from attendance CSV
+            LocalTime in = parseTime(rec[1]); 
             LocalTime out = parseTime(rec[2]);
 
-            LocalTime standardIn = LocalTime.of(8, 0);
-            LocalTime graceIn = LocalTime.of(8, 10);
+            LocalTime standardIn = LocalTime.of(8, 0); // Standard start time
+            LocalTime graceIn = LocalTime.of(8, 10); // 10-minute grace period for late arrivals
 
             if (in.isBefore(graceIn)) {
                 in = standardIn;
@@ -230,6 +246,7 @@ public class MS2MotorPHBasicPayrollSystem {
             if (out.isAfter(LocalTime.of(17, 0))) out = LocalTime.of(17, 0);
 
             double hours = Duration.between(in, out).toMinutes() / 60.0;
+            // Deduct 1 hour for lunch break if full workday
             if (hours >= 8.0) {
                 hours = Math.max(0, hours - 1.0);
             }
@@ -239,6 +256,9 @@ public class MS2MotorPHBasicPayrollSystem {
     }
 
     static void printPayrollReport(String empNum, String[] emp, Map<String, Double> cutoffHours, double hourlyRate) {
+        // emp[1] = Last Name column in the CSV
+        // emp[2] = First Name column in the CSV
+        // emp[3] = Birthday column in the CSV
         System.out.println("\nEmployee #: " + empNum);
         System.out.println("Employee Name: " + emp[2] + " " + emp[1]);
         System.out.println("Birthday: " + emp[3]);
@@ -279,6 +299,8 @@ public class MS2MotorPHBasicPayrollSystem {
 
     static LocalTime parseTime(String t) {
         String[] p = t.split(":");
+        // p[0] = hour part of the time string
+        // p[1] = minute part of the time string
         return LocalTime.of(Integer.parseInt(p[0].trim()), Integer.parseInt(p[1].trim()));
     }
 }
